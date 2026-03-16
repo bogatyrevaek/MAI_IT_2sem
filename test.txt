@@ -1,0 +1,19 @@
+mkdir test_merge
+cd test_merge
+
+echo hello > a.txt
+echo world > b.txt
+echo veryverylongtext > c.txt
+
+mkdir subdir
+echo sub > subdir/d.txt
+echo longlonglongtext > subdir/e.txt
+
+ls
+ls subdir
+
+python3 1.py txt 10 . result.txt // bash 1.sh txt 10 . result.txt
+
+ls
+ls subdir
+cat result.txt
