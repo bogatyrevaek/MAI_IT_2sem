@@ -1,37 +1,39 @@
 #!/bin/bash
 
 help() {
-echo "Usage: $0 [OPTION]... SUFFIX SIZE DIR OUTFILE"
+echo "Usage: $0 [OPTION]..."
 echo
-echo "Merge into OUTFILE all files with SUFFIX whose size is less than SIZE bytes inside DIR and its subdirectories."
+echo "Merge into OUTFILE all files with SUFFIX whose size is less than SIZE bytes."
 echo
 echo "Options:"
-echo "  -h, --help     show this help message and exit"
-echo
-echo "Exit status:"
-echo " 0   if OK,"
-echo " 1   if invalid arguments or missing parameters"
+echo "  -h, --help              show this help message"
+echo "  -s, --suffix SUFFIX     file suffix"
+echo "  -z, --size SIZE         maximum file size in bytes"
+echo "  -d, --directory DIR     directory to search (default: .)"
+echo "  -o, --output FILE       output file"
 }
 
-if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-    help
-    exit 0
-fi
+directory="."
 
-if [ $# -ne 4 ]; then
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help) help; exit 0 ;;
+        -s|--suffix) suffix=$2; shift 2 ;;
+        -z|--size) size=$2; shift 2 ;;
+        -d|--directory) directory=$2; shift 2 ;;
+        -o|--output) outfile=$2; shift 2 ;;
+        *) echo "Unknown option: $1"; help; exit 1 ;;
+    esac
+done
+
+if [ -z "$suffix" ] || [ -z "$size" ] || [ -z "$outfile" ]; then
     help
     exit 1
 fi
 
-suffix=$1
-size=$2
-dir=$3
-outfile=$4
-
 > "$outfile"
 
-for f in $(find "$dir" -type f -name "*.$suffix")
-do
+for f in $(find "$directory" -type f -name "*.$suffix"); do
     filesize=$(stat -c%s "$f")
     if [ "$filesize" -lt "$size" ]; then
         echo "adding $f"
