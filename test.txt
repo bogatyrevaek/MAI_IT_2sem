@@ -9,10 +9,12 @@ mkdir subdir
 echo sub > subdir/d.txt
 echo longlonglongtext > subdir/e.txt
 
+echo "print('hello')" > script.py
+
 ls
 ls subdir
 
-python3 1.py txt 10 . result.txt // bash 1.sh txt 10 . result.txt
+python3 ../1.py txt 10 . result.txt
 
 ls
 ls subdir
