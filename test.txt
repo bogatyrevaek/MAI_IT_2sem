@@ -14,7 +14,7 @@ echo "print('hello')" > script.py
 ls
 ls subdir
 
-python3 ../1.py txt 30 . result.txt
+python3 ../1.py txt 30 . result.txt // bash ../1.sh txt 30 . result.txt
 
 ls
 ls subdir
