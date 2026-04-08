@@ -4,39 +4,35 @@
 #include <windows.h>
 #include <stdbool.h>
 
-// Перечисление стран (1-7)
 typedef enum {
     RUSSIA = 1,
     USA,
-    CHINA,
-    GERMANY,
-    FRANCE,
-    JAPAN,
-    UK
+    MAURITIUS,
+    EGYPT,
+    ISRAEL,
+    TURKEY,
+    UAE
 } Country;
 
-// Структура узла
 typedef struct Node {
     Country data;
     struct Node *left;
     struct Node *right;
 } Node;
 
-// Преобразование enum в строку
 const char* countryToString(Country c) {
     switch(c) {
-        case RUSSIA: return "Russia";
-        case USA:    return "USA";
-        case CHINA:  return "China";
-        case GERMANY:return "Germany";
-        case FRANCE: return "France";
-        case JAPAN:  return "Japan";
-        case UK:     return "UK";
-        default:     return "???";
+        case RUSSIA:   return "Russia";
+        case USA:      return "USA";
+        case MAURITIUS:return "Mauritius";
+        case EGYPT:    return "Egypt";
+        case ISRAEL:   return "Israel";
+        case TURKEY:   return "Turkey";
+        case UAE:      return "UAE";
+        default:       return "???";
     }
 }
 
-// Создание нового узла
 Node* createNode(Country value) {
     Node* newNode = (Node*)malloc(sizeof(Node));
     if (newNode == NULL) return NULL;
@@ -46,7 +42,6 @@ Node* createNode(Country value) {
     return newNode;
 }
 
-// Добавление узла
 Node* addNode(Node* root, Country value) {
     if (root == NULL)
         return createNode(value);
@@ -59,14 +54,12 @@ Node* addNode(Node* root, Country value) {
     return root;
 }
 
-// Поиск минимального узла
 Node* findMin(Node* root) {
     while (root->left != NULL)
         root = root->left;
     return root;
 }
 
-// Удаление узла с сохранением порядка
 Node* deleteNode(Node* root, Country value) {
     if (root == NULL) {
         printf("Страна не найдена!\n");
@@ -77,7 +70,6 @@ Node* deleteNode(Node* root, Country value) {
     else if (value > root->data)
         root->right = deleteNode(root->right, value);
     else {
-        // Узел найден
         if (root->left == NULL) {
             Node* temp = root->right;
             free(root);
@@ -88,7 +80,6 @@ Node* deleteNode(Node* root, Country value) {
             free(root);
             return temp;
         }
-        // Два потомка
         Node* temp = findMin(root->right);
         root->data = temp->data;
         root->right = deleteNode(root->right, temp->data);
@@ -96,7 +87,6 @@ Node* deleteNode(Node* root, Country value) {
     return root;
 }
 
-// Поиск значения в дереве
 bool findValue(Node* root, Country value) {
     if (root == NULL) return false;
     if (root->data == value) return true;
@@ -105,7 +95,6 @@ bool findValue(Node* root, Country value) {
     return findValue(root->right, value);
 }
 
-// Визуализация дерева
 void printTree(Node* root, int level) {
     if (root == NULL) return;
     printTree(root->right, level + 1);
@@ -115,15 +104,13 @@ void printTree(Node* root, int level) {
     printTree(root->left, level + 1);
 }
 
-// Проверка B-дерева
 bool isBTree(Node* root) {
     if (root == NULL) return true;
     int children = (root->left != NULL) + (root->right != NULL);
-    if (children == 1) return false;  // узел с одним потомком
+    if (children == 1) return false;
     return isBTree(root->left) && isBTree(root->right);
 }
 
-// Освобождение памяти
 void freeTree(Node* root) {
     if (root == NULL) return;
     freeTree(root->left);
@@ -154,9 +141,9 @@ int main() {
         }
 
         switch (choice) {
-            case 1:  // Добавление
-                printf("\n1-Russia,2-USA,3-China,4-Germany,5-France,6-Japan,7-UK\n");
-                printf("Введите номер страны: ");
+            case 1:
+                printf("\n1-Russia,2-USA,3-Mauritius,4-Egypt,5-Israel,6-Turkey,7-UAE\n");
+                printf("Куда вы хотите отправиться сегодня (номер): ");
                 scanf("%d", &val);
                 if (val < 1 || val > 7) {
                     printf("Ошибка: номер от 1 до 7\n");
@@ -165,19 +152,19 @@ int main() {
                 root = addNode(root, (Country)val);
                 break;
 
-            case 2:  // Визуализация
+            case 2:
                 if (root == NULL)
                     printf("Дерево пусто!\n");
                 else
                     printTree(root, 0);
                 break;
 
-            case 3:  // Удаление
+            case 3:
                 if (root == NULL) {
                     printf("Дерево пусто!\n");
                     break;
                 }
-                printf("Введите номер страны для удаления: ");
+                printf("Куда вы хотите отправиться сегодня (номер): ");
                 scanf("%d", &val);
                 if (val < 1 || val > 7) {
                     printf("Ошибка: номер от 1 до 7\n");
@@ -189,20 +176,20 @@ int main() {
                     root = deleteNode(root, (Country)val);
                 break;
 
-            case 4:  // Проверка на B-дерево
+            case 4:
                 if (isBTree(root))
                     printf("Да: дерево является B-деревом\n");
                 else
                     printf("Нет: дерево не является B-деревом\n");
                 break;
 
-            case 5:  // Выход
+            case 5:
                 freeTree(root);
                 printf("Программа завершена.\n");
                 return 0;
 
             default:
-                printf("Неверный выбор! Введите 1-6\n");
+                printf("Неверный выбор! Введите 1-5\n");
         }
     }
     return 0;
