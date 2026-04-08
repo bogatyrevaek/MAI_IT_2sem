@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <stdbool.h>
 
+// Перечисление стран (1-7)
 typedef enum {
     RUSSIA = 1,
     USA,
@@ -14,12 +15,14 @@ typedef enum {
     UAE
 } Country;
 
+// Структура узла
 typedef struct Node {
     Country data;
     struct Node *left;
     struct Node *right;
 } Node;
 
+// Преобразование enum в строку
 const char* countryToString(Country c) {
     switch(c) {
         case RUSSIA:   return "Russia";
@@ -33,6 +36,7 @@ const char* countryToString(Country c) {
     }
 }
 
+// Создание нового узла
 Node* createNode(Country value) {
     Node* newNode = (Node*)malloc(sizeof(Node));
     if (newNode == NULL) return NULL;
@@ -42,6 +46,7 @@ Node* createNode(Country value) {
     return newNode;
 }
 
+// Добавление узла
 Node* addNode(Node* root, Country value) {
     if (root == NULL)
         return createNode(value);
@@ -54,12 +59,14 @@ Node* addNode(Node* root, Country value) {
     return root;
 }
 
+// Поиск минимального узла
 Node* findMin(Node* root) {
     while (root->left != NULL)
         root = root->left;
     return root;
 }
 
+// Удаление узла с сохранением порядка
 Node* deleteNode(Node* root, Country value) {
     if (root == NULL) {
         printf("Страна не найдена!\n");
@@ -70,6 +77,7 @@ Node* deleteNode(Node* root, Country value) {
     else if (value > root->data)
         root->right = deleteNode(root->right, value);
     else {
+        // Узел найден
         if (root->left == NULL) {
             Node* temp = root->right;
             free(root);
@@ -80,6 +88,7 @@ Node* deleteNode(Node* root, Country value) {
             free(root);
             return temp;
         }
+        // Два потомка
         Node* temp = findMin(root->right);
         root->data = temp->data;
         root->right = deleteNode(root->right, temp->data);
@@ -87,6 +96,7 @@ Node* deleteNode(Node* root, Country value) {
     return root;
 }
 
+// Поиск значения в дереве
 bool findValue(Node* root, Country value) {
     if (root == NULL) return false;
     if (root->data == value) return true;
@@ -95,6 +105,7 @@ bool findValue(Node* root, Country value) {
     return findValue(root->right, value);
 }
 
+// Визуализация дерева
 void printTree(Node* root, int level) {
     if (root == NULL) return;
     printTree(root->right, level + 1);
@@ -104,13 +115,15 @@ void printTree(Node* root, int level) {
     printTree(root->left, level + 1);
 }
 
+// Проверка B-дерева
 bool isBTree(Node* root) {
     if (root == NULL) return true;
     int children = (root->left != NULL) + (root->right != NULL);
-    if (children == 1) return false;
+    if (children == 1) return false;  // узел с одним потомком
     return isBTree(root->left) && isBTree(root->right);
 }
 
+// Освобождение памяти
 void freeTree(Node* root) {
     if (root == NULL) return;
     freeTree(root->left);
@@ -141,7 +154,7 @@ int main() {
         }
 
         switch (choice) {
-            case 1:
+            case 1:  // Добавление
                 printf("\n1-Russia,2-USA,3-Mauritius,4-Egypt,5-Israel,6-Turkey,7-UAE\n");
                 printf("Куда вы хотите отправиться сегодня (номер): ");
                 scanf("%d", &val);
@@ -152,14 +165,14 @@ int main() {
                 root = addNode(root, (Country)val);
                 break;
 
-            case 2:
+            case 2:  // Визуализация
                 if (root == NULL)
                     printf("Дерево пусто!\n");
                 else
                     printTree(root, 0);
                 break;
 
-            case 3:
+            case 3:  // Удаление
                 if (root == NULL) {
                     printf("Дерево пусто!\n");
                     break;
@@ -176,14 +189,14 @@ int main() {
                     root = deleteNode(root, (Country)val);
                 break;
 
-            case 4:
+            case 4:  // Проверка на B-дерево
                 if (isBTree(root))
                     printf("Да: дерево является B-деревом\n");
                 else
                     printf("Нет: дерево не является B-деревом\n");
                 break;
 
-            case 5:
+            case 5:  // Выход
                 freeTree(root);
                 printf("Программа завершена.\n");
                 return 0;
