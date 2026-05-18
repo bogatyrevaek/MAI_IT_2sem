@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX_SIZE 100
+
+typedef struct {
+    int key;
+    int value;
+} data_type;
+
+typedef struct {
+    data_type data[MAX_SIZE];
+    int size;
+} list_type;
+
+void list_create(list_type *l) {
+    l->size = 0;
+}
+
+void list_push_back(list_type *l, data_type elem) {
+    if (l->size == MAX_SIZE) {
+        printf("Список переполнен\n");
+        return;
+    }
+    l->data[l->size] = elem;
+    l->size++;
+}
+
+void list_print(const list_type *l) {
+    int i;
+    printf("Список: ");
+    for (i = 0; i < l->size; i++) {
+        printf("(%d,%d) ", l->data[i].key, l->data[i].value);
+    }
+    printf("\n");
+}
+
+// Сортировка пузырьком: поиск двух подряд идущих элементов, где первый больше второго, и их перестановка
+void list_sort(list_type *l) {
+    int i, j;
+    for (i = 0; i < l->size - 1; i++) {
+        for (j = 0; j < l->size - i - 1; j++) {
+            if (l->data[j].key > l->data[j + 1].key) {
+                data_type temp = l->data[j];
+                l->data[j] = l->data[j + 1];
+                l->data[j + 1] = temp;
+            }
+        }
+    }
+}
+
+int main() {
+    list_type l;
+    int n, i;
+
+    list_create(&l);
+
+    printf("Введите количество элементов списка: ");
+    scanf("%d", &n);
+
+    printf("Введите key и value для списка:\n");
+    for (i = 0; i < n; i++) {
+        data_type temp;
+        printf("Элемент %d: ", i + 1);
+        scanf("%d %d", &temp.key, &temp.value);
+        list_push_back(&l, temp);
+    }
+
+    printf("\nИсходный список:\n");
+    list_print(&l);
+
+    list_sort(&l);
+
+    printf("Список после сортировки пузырьком:\n");
+    list_print(&l);
+
+    return 0;
+}
